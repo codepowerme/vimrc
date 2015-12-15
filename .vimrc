@@ -428,6 +428,7 @@ Bundle 'L9'
 Bundle 'FuzzyFinder'
 " non github repos
 Bundle 'https://github.com/wincent/command-t.git'
+"Bundle 'wincent/command-t'
 Bundle 'Auto-Pairs'
 Bundle 'python-imports.vim'
 Bundle 'CaptureClipboard'
