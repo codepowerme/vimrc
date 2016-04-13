@@ -41,7 +41,7 @@ set go=             " 不要图形按钮
 "color desert     " 设置背景主题  
 color ron     " 设置背景主题  
 "color torte     " 设置背景主题  
-"set guifont=Courier_New:h10:cANSI   " 设置字体  
+"set guifont=Courier_New:h10:cANSI   " 设置字体
 "autocmd InsertLeave * se nocul  " 用浅色高亮当前行  
 autocmd InsertEnter * se cul    " 用浅色高亮当前行  
 set ruler           " 显示标尺  
@@ -431,3 +431,12 @@ let g:Powerline_symbols = 'fancy'
 let g:airline_theme='base16_atelierheath'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
+
+if has('gui_running')
+    " 图形字体
+    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
+    " OSX 复制
+    set clipboard+=unnamed
+    " CtrlSpace
+    let g:CtrlSpaceSymbols = { "File": "◯", "CTab": "▣", "Tabs": "▢" }
+endif
