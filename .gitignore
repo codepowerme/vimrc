@@ -1,3 +1,4 @@
 *.pyc
 bundle
 _bundle_bak
+session

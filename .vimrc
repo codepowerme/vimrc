@@ -1,9 +1,7 @@
 source ~/.vim/.vimrc.bundle
-
 set sw=4
 set ts=4
 set et
-set smartindent
 set lbr
 set fo+=mB
 set sm
@@ -82,7 +80,8 @@ set iskeyword+=_,$,@,%,#,-
 "新建.c,.h,.sh,.java文件，自动插入文件头 
 autocmd BufNewFile *.cpp,*.[ch],*.sh,*.rb,*.java,*.py exec ":call SetTitle()" 
 ""定义函数SetTitle，自动插入文件头 
-func SetTitle() 
+func! SetTitle() 
+
     "如果文件类型为.sh文件 
     if &filetype == 'sh' 
         call setline(1,"\#!/bin/bash") 
@@ -235,16 +234,75 @@ let Tlist_Exist_OnlyWindow = 1  " 如果只有一个buffer，kill窗口也kill�
 "let Tlist_Show_One_File=1            "不同时显示多个文件的tag，只显示当前文件的
 "设置tags  
 set tags=tags;  
-set autochdir 
+"set autochdir 
+
+nmap <C-b> :bn<CR>
+
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_structs = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+let g:go_fmt_command = "goimports"
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+
+set hidden
+
+let g:ctrlp_map = '<C-p>'
+let g:ctrlp_cmd = 'CtrlP'
+map <leader>f :CtrlPMRU<CR>
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)|pkg$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc|png|jpg|jpeg)$',
+    \ }
+let g:ctrlp_working_path_mode=0
+let g:ctrlp_match_window_bottom=1
+let g:ctrlp_max_height=15
+let g:ctrlp_match_window_reversed=0
+let g:ctrlp_mruf_max=500
+let g:ctrlp_follow_symlinks=1
+
+nnoremap <Leader>fu :CtrlPFunky<Cr>
+" narrow the list down with a word under cursor
+nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
+let g:ctrlp_funky_syntax_highlight = 1
+
+let g:ctrlp_extensions = ['funky']
+
+hi link CtrlSpaceNormal   PMenu
+hi link CtrlSpaceSelected PMenuSel
+hi link CtrlSpaceSearch   Search
+hi link CtrlSpaceStatus   StatusLine
+hi link CtrlSpaceSearch IncSearch
+let g:CtrlSpaceUseUnicode = 1
+
+let g:CtrlSpaceProjectRootMarkers = [
+      \ ".git",
+      \ ".hg",
+      \ ".svn",
+      \ ".bzr",
+      \ "_darcs",
+      \ "CVS",
+      \ "node_modules",
+      \ "bower_components"
+      \ ]
+let g:CtrlSpaceIgnoredFiles = '\v(tmp|temp|\.\*pyc)[\/]'
+let g:CtrlSpaceSearchTiming = 500
+if executable("ag")
+    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+endif
 
 """""""""""""""""
 " NERDTree
 """""""""""""""""
 let g:NERDTreeDirArrowExpandable = '▸'
 let g:NERDTreeDirArrowCollapsible = '▾'
-
+let NERDTreeShowBookmarks=1
+let NERDTreeIgnore=['\.pyc', 'target', 'log']
+let g:NERDTreeGlyphReadOnly=1
 "列出当前目录文件  
 map <F3> :NERDTreeToggle<CR>
+"autocmd VimEnter * NERDTree
 " imap <F3> <ESC> :NERDTreeToggle<CR>
 "打开树状文件目录  
 " map <C-F3> \be  
@@ -254,6 +312,8 @@ map <F3> :NERDTreeToggle<CR>
 "autocmd vimenter * if !argc() | NERDTree | endif
 " 只剩 NERDTree时自动关闭
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+
+map <leader>, :TagbarToggle<CR>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "其他东东
@@ -279,10 +339,7 @@ set iskeyword+=.
 set encoding=utf8
 set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
 
-
 filetype plugin indent on     " required!
-
-let NERDTreeIgnore=['\.pyc', 'target', 'log']
 
 set background=dark
 colorscheme solarized
@@ -304,3 +361,12 @@ if has('gui_running')
     " CtrlSpace
     let g:CtrlSpaceSymbols = { "File": "◯", "CTab": "▣", "Tabs": "▢" }
 endif
+
+let g:gitgutter_diff_args = '-w'
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+
+"cnoreabbrev q call CloseOnLast()
+"cnoreabbrev qa on<bar>call CloseOnLast()
+"cnoreabbrev wq w<bar>call CloseOnLast()
+"cnoreabbrev wqa wa<bar>call CloseOnLast()
