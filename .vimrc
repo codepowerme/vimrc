@@ -1,31 +1,38 @@
 source ~/.vim/.vimrc.bundle
 set sw=4
 set ts=4
-set et
-set lbr
-set fo+=mB
-set sm
-set wildmenu
-set mousemodel=popup
+set encoding=utf8
+"set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
+hi OverLength ctermbg=none ctermfg=none guibg=none
+match OverLength /\%>1800v/
+set nowrap
+
+filetype plugin indent on     " required!
+
+syntax enable
+set background=dark
+colorscheme solarized
 
 let mapleader=","
-map <leader>tt :Tlist<cr>
+let g:EasyMotion_smartcase = 1
+map <Leader> <Plug>(easymotion-prefix)
+map <leader><leader>h <Plug>(easymotion-linebackward)
+map <leader><Leader>j <Plug>(easymotion-j)
+map <leader><Leader>k <Plug>(easymotion-k)
+map <leader><leader>l <Plug>(easymotion-lineforward)
+" 重复上一次操作, 类似repeat插件, 很强大
+map <leader><leader>. <Plug>(easymotion-repeat)
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 显示相关  
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-syntax on
 set cul "高亮光标所在行
 set cuc
 set shortmess=atI   " 启动的时候不显示那个援助乌干达儿童的提示  
 set go=             " 不要图形按钮  
-"color desert     " 设置背景主题  
-color ron     " 设置背景主题  
-"color torte     " 设置背景主题  
 "set guifont=Courier_New:h10:cANSI   " 设置字体
 "autocmd InsertLeave * se nocul  " 用浅色高亮当前行  
 autocmd InsertEnter * se cul    " 用浅色高亮当前行  
-set ruler           " 显示标尺  
+"set ruler           " 显示标尺  
 set showcmd         " 输入的命令显示出来，看的清楚些  
 "set whichwrap+=<,>,h,l   " 允许backspace和光标键跨越行边界(不建议)  
 set scrolloff=4     " 光标移动到buffer的顶部和底部时保持3行距离  
@@ -41,7 +48,7 @@ if version >= 603
 endif
 " 自动缩进
 set autoindent
-set cindent
+set foldlevel=99
 " Tab键的宽度
 " set tabstop=4
 " 统一缩进为4
@@ -64,10 +71,6 @@ set helplang=cn
 set cmdheight=2
 " 侦测文件类型
 filetype on
-" 载入文件类型插件
-filetype plugin on
-" 为特定文件类型载入相关缩进文件
-filetype indent on
 " 保存全局变量
 set viminfo+=!
 " 带有如下符号的单词不要被换行分割
@@ -112,19 +115,6 @@ func! SetTitle()
         call append(line(".")+7, "using namespace std;")
         call append(line(".")+8, "")
     endif
-    if &filetype == 'c'
-        call append(line(".")+6, "#include<stdio.h>")
-        call append(line(".")+7, "")
-    endif
-    if expand("%:e") == 'h'
-        call append(line(".")+6, "#ifndef _".toupper(expand("%:r"))."_H")
-        call append(line(".")+7, "#define _".toupper(expand("%:r"))."_H")
-        call append(line(".")+8, "#endif")
-    endif
-    if &filetype == 'java'
-        call append(line(".")+6,"public class ".expand("%:r"))
-        call append(line(".")+7,"")
-    endif
     "新建文件后，自动定位到文件末尾
 endfunc 
 autocmd BufNewFile * normal G
@@ -132,60 +122,30 @@ autocmd BufNewFile * normal G
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "键盘命令
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-:nmap <silent> <F9> <ESC>:Tlist<RETURN>
 " shift tab pages
 " map <S-Left> :tabp<CR>
 " map <S-Right> :tabn<CR>
-map! <C-Z> <Esc>zzi
-map! <C-O> <C-Y>,
 map <C-A> ggVG$"+y
 map <F12> gg=G
 map <C-w> <C-w>w
-imap <C-k> <C-y>,
 imap <C-t> <C-q><TAB>
-imap <C-j> <ESC>
-" 选中状态下 Ctrl+c 复制
-"map <C-v> "*pa
-imap <C-v> <Esc>"*pa
-imap <C-a> <Esc>^
-imap <C-e> <Esc>$
-vmap <C-c> "+y
 " set mouse=v
-set clipboard=unnamed
+set clipboard+=unnamed
 "去空行  
 nnoremap <F2> :g/^\s*$\n\s*$/d<CR> 
 "比较文件  
 nnoremap <C-F2> :vert diffsplit 
-"nnoremap <Leader>fu :CtrlPFunky<Cr>
-"nnoremap <C-n> :CtrlPFunky<Cr>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 ""实用设置
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if has("autocmd")
-    autocmd BufReadPost *
-                \ if line("'\"") > 0 && line("'\"") <= line("$") |
-                \   exe "normal g`\"" |
-                \ endif
-endif
 " 设置当文件被改动时自动载入
 set autoread
-" quickfix模式
-autocmd FileType c,cpp map <buffer> <leader><space> :w<cr>:make<cr>
 "代码补全 
 set completeopt=preview,menu 
 "允许插件  
-"filetype plugin on
-"共享剪贴板  
-"set clipboard+=unnamed 
-"set ruler                   " 打开状态栏标尺
-"set cursorline              " 突出显示当前行
-set magic                   " 设置魔术
 set guioptions-=T           " 隐藏工具栏
 set guioptions-=m           " 隐藏菜单栏
-""set foldcolumn=0
-""set foldmethod=indent 
-""set foldlevel=3 
 " 不要使用vi的键盘模式，而是vim自己的
 set nocompatible
 " 去掉输入错误的提示声音
@@ -203,8 +163,6 @@ set ignorecase
 set wildmenu
 " 使回格键（backspace）正常处理indent, eol, start等
 set backspace=2
-" 允许backspace和光标键跨越行边界
-set whichwrap+=<,>,h,l
 " 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
 set mouse=a
 "set selection=exclusive
@@ -219,23 +177,9 @@ set showmatch
 set matchtime=1
 " 光标移动到buffer的顶部和底部时保持3行距离
 set scrolloff=4
-filetype plugin indent on 
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" CTags的设定  
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let Tlist_Sort_Type = "name"    " 按照名称排序  
-let Tlist_Use_Right_Window = 1  " 在右侧显示窗口  
-let Tlist_Compart_Format = 1    " 压缩方式  
-let Tlist_Exist_OnlyWindow = 1  " 如果只有一个buffer，kill窗口也kill掉buffer  
-""let Tlist_File_Fold_Auto_Close = 0  " 不要关闭其他文件的tags  
-""let Tlist_Enable_Fold_Column = 0    " 不要显示折叠树  
-"let Tlist_Show_One_File=1            "不同时显示多个文件的tag，只显示当前文件的
-"设置tags  
-set tags=tags;  
 "set autochdir 
-
 nmap <C-b> :bn<CR>
 
 let g:go_highlight_functions = 1
@@ -315,9 +259,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTree
 
 map <leader>, :TagbarToggle<CR>
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"其他东东
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "默认打开Taglist 
 let Tlist_Auto_Open=0 
 """""""""""""""""""""""""""""" 
@@ -335,17 +276,6 @@ let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1  
 " nmap tl :Tlist<cr>
 
-set iskeyword+=.
-set encoding=utf8
-set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
-
-filetype plugin indent on     " required!
-
-set background=dark
-colorscheme solarized
-
-let g:vim_markdown_frontmatter=1
-
 " 状态条
 let g:airline_powerline_fonts = 1
 let g:Powerline_symbols = 'fancy'
@@ -355,7 +285,7 @@ let g:airline#extensions#tabline#buffer_nr_show = 1
 
 if has('gui_running')
     " 图形字体
-    set guifont=DejaVu\ Sans\ Mono\ for\ Powerline
+    set guifont=Inconsolata-dz_for_Powerline:h13
     " OSX 复制
     set clipboard+=unnamed
     " CtrlSpace
@@ -370,3 +300,4 @@ let g:gitgutter_eager = 0
 "cnoreabbrev qa on<bar>call CloseOnLast()
 "cnoreabbrev wq w<bar>call CloseOnLast()
 "cnoreabbrev wqa wa<bar>call CloseOnLast()
+"
