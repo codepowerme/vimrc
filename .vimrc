@@ -1,11 +1,9 @@
 source ~/.vim/.vimrc.bundle
 set sw=4
 set ts=4
+set ruler
 set encoding=utf8
 "set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
-hi OverLength ctermbg=none ctermfg=none guibg=none
-match OverLength /\%>1800v/
-set nowrap
 
 filetype plugin indent on     " required!
 
@@ -26,13 +24,11 @@ map <leader><leader>. <Plug>(easymotion-repeat)
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " 显示相关  
 set cul "高亮光标所在行
-set cuc
+"set cuc
 set shortmess=atI   " 启动的时候不显示那个援助乌干达儿童的提示  
 set go=             " 不要图形按钮  
-"set guifont=Courier_New:h10:cANSI   " 设置字体
 "autocmd InsertLeave * se nocul  " 用浅色高亮当前行  
 autocmd InsertEnter * se cul    " 用浅色高亮当前行  
-"set ruler           " 显示标尺  
 set showcmd         " 输入的命令显示出来，看的清楚些  
 "set whichwrap+=<,>,h,l   " 允许backspace和光标键跨越行边界(不建议)  
 set scrolloff=4     " 光标移动到buffer的顶部和底部时保持3行距离  
@@ -48,6 +44,7 @@ if version >= 603
 endif
 " 自动缩进
 set autoindent
+set cindent
 set foldlevel=99
 " Tab键的宽度
 " set tabstop=4
@@ -283,9 +280,11 @@ let g:airline_theme='base16_atelierheath'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 
+let g:vim_markdown_frontmatter=1
+
 if has('gui_running')
     " 图形字体
-    set guifont=Inconsolata-dz_for_Powerline:h13
+    set guifont=Inconsolata-dz_for_Powerline:h12
     " OSX 复制
     set clipboard+=unnamed
     " CtrlSpace
@@ -296,8 +295,42 @@ let g:gitgutter_diff_args = '-w'
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 
-"cnoreabbrev q call CloseOnLast()
+cnoreabbrev q call CloseOnLast()
 "cnoreabbrev qa on<bar>call CloseOnLast()
-"cnoreabbrev wq w<bar>call CloseOnLast()
+cnoreabbrev wq w<bar>call CloseOnLast()
 "cnoreabbrev wqa wa<bar>call CloseOnLast()
-"
+
+function! NrBufs()
+    let i = bufnr('$')
+    let j = 0
+    while i >= 1
+        if buflisted(i)
+            let j+=1
+        endif
+        let i-=1
+    endwhile
+    return j
+endfunction
+
+function! CloseOnLast()
+	let buffer_count = NrBufs()
+    if buffer_count > 0
+		bd
+	endif
+	if winnr('$')>1 || tabpagenr('$')>1
+        q
+    else
+        :Startify
+    endif
+endfunction
+
+map <F11> :call FormartSrc()<CR>
+"define FormartSrc()
+func FormartSrc()
+exec "w"
+	if &filetype == 'py'||&filetype == 'python'
+		exec "r !autopep8 -i --aggressive %"
+	endif
+exec "e! %"
+endfunc
+"end FormartSrc
