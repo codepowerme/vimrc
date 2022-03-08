@@ -1,4 +1,5 @@
-source ~/.vim/.vimrc.bundle
+source ~/.vim/config/plugins.vim
+
 set sw=4
 set ts=4
 set ruler
@@ -10,7 +11,8 @@ filetype plugin indent on     " required!
 syntax enable
 set background=dark
 colorscheme solarized
-
+let g:ctrlp_map = ''
+let g:closetag_html_style=1
 let mapleader=","
 let g:EasyMotion_smartcase = 1
 map <Leader> <Plug>(easymotion-prefix)
@@ -189,35 +191,16 @@ let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 
 set hidden
 
-let g:ctrlp_map = '<C-p>'
-let g:ctrlp_cmd = 'CtrlP'
-map <leader>f :CtrlPMRU<CR>
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)|pkg$',
-    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc|png|jpg|jpeg)$',
-    \ }
-let g:ctrlp_working_path_mode=0
-let g:ctrlp_match_window_bottom=1
-let g:ctrlp_max_height=15
-let g:ctrlp_match_window_reversed=0
-let g:ctrlp_mruf_max=500
-let g:ctrlp_follow_symlinks=1
-
-nnoremap <Leader>fu :CtrlPFunky<Cr>
-" narrow the list down with a word under cursor
-nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<Cr>
-let g:ctrlp_funky_syntax_highlight = 1
-
-let g:ctrlp_extensions = ['funky']
-
-hi link CtrlSpaceNormal   PMenu
-hi link CtrlSpaceSelected PMenuSel
-hi link CtrlSpaceSearch   Search
-hi link CtrlSpaceStatus   StatusLine
-hi link CtrlSpaceSearch IncSearch
-let g:CtrlSpaceUseUnicode = 1
-
-let g:CtrlSpaceProjectRootMarkers = [
+augroup CtrlSpace
+    autocmd!
+	hi link CtrlSpaceNormal   PMenu
+	hi link CtrlSpaceSelected PMenuSel
+	hi link CtrlSpaceSearch   Search
+	hi link CtrlSpaceStatus   StatusLine
+	hi link CtrlSpaceSearch IncSearch
+	let g:CtrlSpaceUseUnicode = 1
+	nnoremap <silent><C-p> :CtrlSpace O<CR>
+	let g:CtrlSpaceProjectRootMarkers = [
       \ ".git",
       \ ".hg",
       \ ".svn",
@@ -227,11 +210,12 @@ let g:CtrlSpaceProjectRootMarkers = [
       \ "node_modules",
       \ "bower_components"
       \ ]
-let g:CtrlSpaceIgnoredFiles = '\v(tmp|temp|\.\*pyc)[\/]'
-let g:CtrlSpaceSearchTiming = 500
-if executable("ag")
-    let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
-endif
+	let g:CtrlSpaceIgnoredFiles = '\v(tmp|temp|\.\*pyc)[\/]'
+	let g:CtrlSpaceSearchTiming = 500
+	if executable("ag")
+    	let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
+	endif
+augroup END
 
 """""""""""""""""
 " NERDTree
@@ -243,6 +227,7 @@ let NERDTreeIgnore=['\.pyc', 'target', 'log']
 let g:NERDTreeGlyphReadOnly=1
 "列出当前目录文件  
 map <F3> :NERDTreeToggle<CR>
+map <C-n> :NERDTreeToggle<CR>
 "autocmd VimEnter * NERDTree
 " imap <F3> <ESC> :NERDTreeToggle<CR>
 "打开树状文件目录  
@@ -255,6 +240,7 @@ map <F3> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
 map <leader>, :TagbarToggle<CR>
+let g:CtrlSpaceEnableFilesCache = 0
 
 "默认打开Taglist 
 let Tlist_Auto_Open=0 
@@ -285,6 +271,7 @@ let g:vim_markdown_frontmatter=1
 if has('gui_running')
     " 图形字体
     set guifont=Inconsolata-dz_for_Powerline:h12
+	" set guifont=Menlo
     " OSX 复制
     set clipboard+=unnamed
     " CtrlSpace
@@ -295,9 +282,9 @@ let g:gitgutter_diff_args = '-w'
 let g:gitgutter_realtime = 0
 let g:gitgutter_eager = 0
 
-cnoreabbrev q call CloseOnLast()
+"cnoreabbrev q call CloseOnLast()
 "cnoreabbrev qa on<bar>call CloseOnLast()
-cnoreabbrev wq w<bar>call CloseOnLast()
+"cnoreabbrev wq w<bar>call CloseOnLast()
 "cnoreabbrev wqa wa<bar>call CloseOnLast()
 
 function! NrBufs()
